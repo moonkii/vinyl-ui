@@ -4,6 +4,7 @@ import Badge from '../docs/Badge';
 import Callout from '../docs/Callout';
 import CodeBlock from '../docs/CodeBlock';
 import Palette from '../docs/Palette';
+import InputPasswordDemo from '../docs/InputPasswordDemo';
 import Preview from '../docs/Preview';
 import PropsTable from '../docs/PropsTable';
 import Section from '../docs/Section';
@@ -50,6 +51,7 @@ const baseComponents: MDXComponents = {
   Swatch,
   Palette,
   SelectDemo,
+  InputPasswordDemo,
   TypeTable: PropsTable,
 };
 

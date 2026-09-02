@@ -1,0 +1,181 @@
+---
+title: Input
+description: 텍스트를 입력받는 필드 컴포넌트
+---
+
+import { Input, InputUnit, InputIcon } from '@bigmobility/vinyl-ui';
+
+Input은 네이티브 `<input>`을 감싼 **시각(스타일) 전용** 컴포넌트입니다. 우측 애드온은 `Input` 내부에
+`InputUnit`(텍스트)·`InputIcon`(아이콘)을 **children으로 중첩**해 구성합니다. 값 제어·검증 등은
+표준 input 속성(`value`·`onChange`·`type`…)을 그대로 넘겨 사용합니다.
+
+<Callout type="info">
+  `InputUnit`·`InputIcon`은 **`Input` 내부에서만** 사용할 수 있습니다(밖에서 쓰면 에러). 비밀번호 토글·날짜 선택·인증 타이머 같은 **동작**은 이 컴포넌트 범위 밖이며, 아래 [타입별 필드](#타입별-필드-조합)처럼 앱에서 조합합니다.
+</Callout>
+
+## 기본 예시
+
+<Preview>
+  <Input placeholder="이름을 입력하세요" />
+</Preview>
+
+```tsx
+import { Input } from '@bigmobility/vinyl-ui';
+
+<Input
+  placeholder="이름을 입력하세요"
+  value={value}
+  onChange={(e) => setValue(e.target.value)}
+/>
+```
+
+## 상태
+
+`hover`·`focus`(active)는 자동으로 테두리가 강조됩니다. `hasError`는 에러 스타일, `disabled`는 비활성.
+
+<Preview>
+  <Input placeholder="기본" />
+  <Input hasError defaultValue="잘못된 값" />
+  <Input disabled defaultValue="비활성" />
+</Preview>
+
+```tsx
+<Input placeholder="기본" />
+<Input hasError value={value} onChange={onChange} />
+<Input disabled value={value} />
+```
+
+## 우측 텍스트 — InputUnit
+
+단위·인증 타이머처럼 우측에 텍스트를 붙일 때 `InputUnit`을 중첩합니다.
+
+<Preview>
+  <Input defaultValue="70">
+    <InputUnit>kg</InputUnit>
+  </Input>
+</Preview>
+
+```tsx
+import { Input, InputUnit } from '@bigmobility/vinyl-ui';
+
+<Input value={weight} onChange={onChange}>
+  <InputUnit>kg</InputUnit>
+</Input>
+```
+
+## 우측 아이콘 — InputIcon
+
+날짜·검색 등 우측 아이콘은 `InputIcon`에 lucide 아이콘 이름을 넘깁니다.
+
+<Preview>
+  <Input defaultValue="2026-08-05" readOnly>
+    <InputIcon name="calendar" />
+  </Input>
+</Preview>
+
+```tsx
+import { Input, InputIcon } from '@bigmobility/vinyl-ui';
+
+<Input value={date} readOnly>
+  <InputIcon name="calendar" />
+</Input>
+```
+
+## 타입별 필드 조합
+
+동작이 필요한 필드(비밀번호 토글, 날짜 선택 등)는 `Input` + `InputIcon`을 **앱에서 조합**해 만듭니다.
+아래는 비밀번호 표시/숨김 필드 예시입니다.
+
+<Preview>
+  <InputPasswordDemo />
+</Preview>
+
+```tsx
+import { Input, InputIcon } from '@bigmobility/vinyl-ui';
+import { useState } from 'react';
+
+function PasswordField() {
+  const [show, setShow] = useState(false);
+
+  return (
+    <Input type={show ? 'text' : 'password'}>
+      <button
+        type="button"
+        aria-label={show ? '비밀번호 숨기기' : '비밀번호 표시'}
+        onClick={() => setShow((prev) => !prev)}
+      >
+        <InputIcon name={show ? 'eye' : 'eye-off'} />
+      </button>
+    </Input>
+  );
+}
+```
+
+## Props
+
+<Callout type="info">
+  `Input`은 위 props 외에 **표준 `<input>` 속성**(`value`·`onChange`·`type`·`placeholder`·`readOnly`·`name`…)을 그대로 전달받습니다.
+</Callout>
+
+### Input
+
+<PropsTable
+  type={{
+    hasError: {
+      type: 'boolean',
+      default: 'false',
+      description: '에러 스타일 적용 (data-invalid)',
+    },
+    disabled: {
+      type: 'boolean',
+      default: 'false',
+      description: '비활성화',
+    },
+  }}
+/>
+
+### InputUnit
+
+<PropsTable
+  type={{
+    children: {
+      type: 'ReactNode',
+      description: '우측에 표시할 단위·텍스트',
+    },
+  }}
+/>
+
+### InputIcon
+
+<PropsTable
+  type={{
+    name: {
+      type: 'IconName',
+      description: '우측 아이콘 이름 (lucide)',
+    },
+  }}
+/>
+
+## 접근성
+
+- 네이티브 `<input>` 기반이라 포커스·입력·`disabled`가 기본 동작합니다.
+- **라벨 연결을 권장**합니다(`<label htmlFor>` 또는 `aria-label`). `placeholder`는 라벨을 대체하지 않습니다.
+- `hasError`는 시각 표시(`data-invalid`)만 합니다. 스크린리더용으로 `aria-invalid`와 에러 메시지 연결은 앱에서 처리하세요.
+
+## 토큰 커스터마이징
+
+Input은 아래 시맨틱 토큰을 참조합니다. ([테마](/docs/theming) 참고).
+
+| 토큰 | 미리보기 | 용도 |
+| --- | --- | --- |
+| `layout.bg-light` | <Swatch token="layout.bg-light" /> | 배경 |
+| `layout.default-line` | <Swatch token="layout.default-line" /> | 테두리 |
+| `layout.strong-line` | <Swatch token="layout.strong-line" /> | hover·focus 테두리 |
+| `layout.bg-issue` | <Swatch token="layout.bg-issue" /> | 에러 배경 |
+| `layout.issue-line` | <Swatch token="layout.issue-line" /> | 에러 테두리 |
+| `layout.bg-disable` | <Swatch token="layout.bg-disable" /> | 비활성 배경 |
+| `text.input` | <Swatch token="text.input" /> | 입력 텍스트·아이콘 |
+| `text.input-soft` | <Swatch token="text.input-soft" /> | placeholder |
+| `text.disable` | <Swatch token="text.disable" /> | 비활성 텍스트 |
+
+타이포는 `input.medium-light`, 높이는 `sizes.input-height`(4.8rem)를 사용합니다.
